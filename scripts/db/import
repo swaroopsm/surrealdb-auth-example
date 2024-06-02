@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo "\nImporting Config"
+surreal import --conn http://localhost:8000 --user root --pass root --ns surrealdb_auth_example --db default ./surrealdb/config.surql
+
+echo "\nImport Functions"
+surreal import --conn http://localhost:8000 --user root --pass root --ns surrealdb_auth_example --db default ./surrealdb/functions.surql

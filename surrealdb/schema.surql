@@ -1,4 +1,4 @@
-USE NS surrealdb DB public;
+USE NS surrealdb_auth_example DB default;
 
 DEFINE TABLE user SCHEMAFULL
 	PERMISSIONS

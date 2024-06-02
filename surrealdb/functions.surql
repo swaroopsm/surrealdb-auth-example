@@ -23,7 +23,7 @@ DEFINE FUNCTION fn::getToken() {
 DEFINE FUNCTION fn::generateGithuOAuthUrl() {
   LET $redirect_uri = 'http%3A%2F%2F127.0.0.1%3A8080%2Foauth%2Fgithub%2Fcallback';
   LET $params = array::join([
-    array::join(['client_id', 'gh_client_id'], '='),
+    array::join(['client_id', $GITHUB_CLIENT_ID], '='),
     array::join(['redirect_uri', $redirect_uri], '='),
   ], '&');
   
@@ -38,8 +38,8 @@ DEFINE FUNCTION fn::authorizeGithub($code: string) {
 
   LET $response = http::post($authorizationUrl, {
     'code': $code,
-    client_id: 'gh_client_id',
-    client_secret: 'gh_client_secret'
+    client_id: $GITHUB_CLIENT_ID,
+    client_secret: $GITHUB_CLIENT_SECRET
   }, {
     'Accept': 'application/json',
     'Content-Type': 'application/json'

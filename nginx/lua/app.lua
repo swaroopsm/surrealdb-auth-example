@@ -2,13 +2,10 @@ package.path = "/etc/nginx/conf.d/lua/?.lua;" .. package.path
 
 local cjson = require("cjson")
 local jwt = require("resty.jwt")
-local greeting = require("greeting")
 local httpc = require("resty.http").new()
 
-local user = {
-	name = "Striker Sethumadhavan",
-	email = "striker@example.org",
-}
+local SURREALDB_USER = os.getenv('SURREALDB_DATABASE_USER');
+local SURREALDB_PASSWORD = os.getenv('SURREALDB_DATABASE_PASSWORD');
 
 local routes = {}
 
@@ -16,8 +13,8 @@ local invoke_surrealdb_func = function(fn, token)
 	local headers = {
 		["Content-Type"] = "application/json",
 		["Accept"] = "application/json",
-		["NS"] = "surrealdb",
-		["DB"] = "public",
+		["NS"] = "surrealdb_auth_example",
+		["DB"] = "default",
 	}
 
 	if token then
@@ -37,14 +34,19 @@ local invoke_surrealdb_func = function(fn, token)
 end
 
 local createOrFindUser = function(payload)
+	print("===")
+	print(os.getenv('SURREALDB_DATABASE_USER'))
+	print(SURREALDB_USER)
+	print(SURREALDB_PASSWORD)
+	print("===")
 	local res, err = httpc:request_uri("http://surrealdb:8000", {
 		method = "POST",
 		path = "/signin",
 		body = cjson.encode({
-			ns = "surrealdb",
-			db = "public",
-			user = "db",
-			pass = "password",
+			ns = "surrealdb_auth_example",
+			db = "default",
+			user = SURREALDB_USER,
+			pass = SURREALDB_PASSWORD,
 		}),
 		headers = {
 			["Content-Type"] = "application/json",
@@ -128,8 +130,8 @@ routes["/oauth/github/callback"] = function()
 						id = me[1.].result.id,
 						tk = "github",
 						sc = "user",
-						db = "public",
-						ns = "surrealdb",
+						db = "default",
+						ns = "surrealdb_auth_example",
 						exp = exp,
 					},
 				})
@@ -166,5 +168,3 @@ if success then
 else
 	return ngx.exit(ngx.HTTP_NOT_FOUND)
 end
-
--- ngx.say(cjson.encode(user))

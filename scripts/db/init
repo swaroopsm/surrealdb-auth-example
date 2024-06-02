@@ -1,0 +1,14 @@
+#!/bin/sh
+
+echo "Importing Schema"
+surreal import --conn http://localhost:8000 --user root --pass root --ns surrealdb_auth_example --db default ./surrealdb/schema.surql
+
+echo "\nImporting Config"
+surreal import --conn http://localhost:8000 --user root --pass root --ns surrealdb_auth_example --db default ./surrealdb/config.surql
+
+echo "\nImport Functions"
+surreal import --conn http://localhost:8000 --user root --pass root --ns surrealdb_auth_example --db default ./surrealdb/functions.surql
+
+echo "\nCreate default Database user"
+curl -X POST -u "root:root" -H "NS: surrealdb_auth_example" -H "DB: default" -H "Accept: application/json" -d "DEFINE USER admin on DATABASE PASSWORD 'admin' ROLES OWNER;" http://localhost:8000/sql
+
