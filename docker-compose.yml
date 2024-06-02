@@ -1,0 +1,35 @@
+version: "3"
+
+name: surrealdb-auth-example
+services:
+  openresty:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/ping"]
+      interval: 15s
+      timeout: 2s
+      retries: 5
+
+  surrealdb:
+    entrypoint:
+      - /surreal
+      - start
+      - file:/db
+      - --user
+      - root
+      - --pass
+      - root
+      - --auth
+      - --allow-all
+    image: surrealdb/surrealdb:latest
+    ports:
+      - 8000:8000
+    volumes:
+      - ./surrealdb/db:/db
