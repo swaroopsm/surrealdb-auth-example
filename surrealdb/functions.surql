@@ -20,17 +20,22 @@ DEFINE FUNCTION fn::getToken() {
   RETURN SELECT * FROM $token;
 };
 
-DEFINE FUNCTION fn::generateGithuOAuthUrl() {
-  LET $redirect_uri = 'http%3A%2F%2F127.0.0.1%3A8080%2Foauth%2Fgithub%2Fcallback';
-  LET $params = array::join([
-    array::join(['client_id', $GITHUB_CLIENT_ID], '='),
-    array::join(['redirect_uri', $redirect_uri], '='),
-  ], '&');
-  
-  RETURN array::join([
-    'https://github.com/login/oauth/authorize',
-    $params
-  ], '?');
+DEFINE FUNCTION fn::getOAuthUrl($provider: string) {
+
+  IF ($provider == "github") {
+    LET $params = array::join([
+      array::join(['client_id', $GITHUB_CLIENT_ID], '='),
+      array::join(['redirect_uri', $GITHUB_CALLBACK_URL], '='),
+    ], '&');
+
+    RETURN array::join([
+      'https://github.com/login/oauth/authorize',
+      $params
+    ], '?');
+  } ELSE {
+    THROW 'Provider is not configured';
+  }
+
 };
 
 DEFINE FUNCTION fn::authorizeGithub($code: string) {

@@ -19,6 +19,8 @@ services:
     environment:
       - SURREALDB_DATABASE_USER=admin
       - SURREALDB_DATABASE_PASSWORD=admin
+      - SURREALDB_NS=surrealdb_auth_example
+      - SURREALDB_DB=default
 
   surrealdb:
     entrypoint:
