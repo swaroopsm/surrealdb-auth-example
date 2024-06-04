@@ -41,11 +41,9 @@ _M.sql = function(statement, token)
 	local res, err = httpc:request_uri(SURREALDB_ENDPOINT, {
 		method = "POST",
 		path = "/sql",
-		body = "fn::generateGitHubOAuthUrl()",
+		body = statement,
 		headers = headers,
 	})
-
-	ngx.log(ngx.INFO, statement)
 
 	return cjson.decode(res.body)
 end
