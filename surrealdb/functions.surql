@@ -75,4 +75,4 @@ DEFINE FUNCTION fn::mayBeCreateUserAfterOAuth($name: string, $email: string) {
     RETURN CREATE ONLY user SET name = $name, email = $email RETURN id;
  }
  END
-}
+};

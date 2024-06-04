@@ -72,4 +72,57 @@ _M.fn = function(fn, ...)
 	return _M.sql(expression)
 end
 
+_M.signup = function(params)
+	local body = {
+		["NS"] = SURREALDB_NS,
+		["DB"] = SURREALDB_DB,
+	}
+
+	if params.type == "oauth" then
+		body["email"] = params.email
+		body["name"] = params.name
+		body["provider"] = params.provider
+		body["sub"] = params.sub
+	end
+
+	local res, err = httpc:request_uri(SURREALDB_ENDPOINT, {
+		method = "POST",
+		path = "/signup",
+		body = cjson.encode(body),
+		headers = getHeaders(),
+	})
+
+	if err then
+		error("surrealdb http error")
+	end
+
+	return res.body
+end
+
+_M.signin = function(params)
+	local body = {
+		["NS"] = SURREALDB_NS,
+		["DB"] = SURREALDB_DB,
+	}
+
+	if params.type == "oauth" then
+		body["email"] = params.email
+		body["provider"] = params.provider
+		body["sub"] = params.sub
+	end
+
+	local res, err = httpc:request_uri(SURREALDB_ENDPOINT, {
+		method = "POST",
+		path = "/signin",
+		body = cjson.encode(body),
+		headers = getHeaders(),
+	})
+
+	if err then
+		error("surrealdb http error")
+	end
+
+	return res.body
+end
+
 return _M
