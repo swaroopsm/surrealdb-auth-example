@@ -7,11 +7,14 @@ if ngx.var[1] == "github" then
 
 	ngx.log(ngx.INFO, cjson.encode(response))
 
+	local result = response[1].result
+
 	local user = surrealdb.signup({
-		name = response.name,
-		email = response.email,
-		sub = response.id,
+		name = result.name,
+		email = result.email,
+		sub = result.id,
 		provider = ngx.var[1],
+		type = "oauth",
 	})
 
 	ngx.say(cjson.encode(user))

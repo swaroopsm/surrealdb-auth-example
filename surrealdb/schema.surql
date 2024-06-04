@@ -18,8 +18,8 @@ DEFINE INDEX email ON user FIELDS email UNIQUE;
 -- Table: account
 DEFINE TABLE account SCHEMAFULL
 	PERMISSIONS
-		FOR select, update, delete WHERE id = $auth.id
-    FOR create NONE;
+		FOR create, update, delete NONE 
+    FOR select WHERE <-authenticated.in CONTAINS $auth.id;
 DEFINE FIELD provider ON account TYPE string;
 DEFINE FIELD sub ON account TYPE string;
 DEFINE INDEX provider_sub_unique ON user FIELDS provider, sub UNIQUE;
@@ -27,6 +27,8 @@ DEFINE INDEX provider_sub_unique ON user FIELDS provider, sub UNIQUE;
 -- Graph Edge user <-> account
 DEFINE FIELD in ON TABLE authenticated TYPE record<user>;
 DEFINE FIELD out ON TABLE authenticated TYPE record<account>;
+DEFINE TABLE authenticated SCHEMAFULL PERMISSIONS
+  FOR SELECT WHERE in.id = $auth.id;
 
 -- Local auth scope
 DEFINE SCOPE IF NOT EXISTS user SESSION 7d

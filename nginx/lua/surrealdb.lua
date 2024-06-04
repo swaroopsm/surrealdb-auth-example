@@ -6,8 +6,6 @@ local cjson = require("cjson")
 local SURREALDB_ENDPOINT = "http://surrealdb:8000"
 local SURREALDB_NS = os.getenv("SURREALDB_NS")
 local SURREALDB_DB = os.getenv("SURREALDB_DB")
-local SURREALDB_USER = os.getenv("SURREALDB_DATABASE_USER")
-local SURREALDB_PASSWORD = os.getenv("SURREALDB_DATABASE_PASSWORD")
 
 local getHeaders = function()
 	return {
@@ -52,22 +50,24 @@ _M.fn = function(fn, ...)
 	local args = { ... }
 	local expression = "fn::" .. fn .. "("
 
-	for i, v in ipairs(args) do
-		if type(v == "string") then
-			expression = expression .. '"' .. v .. '"'
-		elseif type(v == "number") then
-			expression = expression .. v
-		else
-		end
+	if args then
+		for i, v in ipairs(args) do
+			if type(v == "string") then
+				expression = expression .. '"' .. v .. '"'
+			elseif type(v == "number") then
+				expression = expression .. v
+			else
+			end
 
-		if i ~= #args then
-			expression = expression .. ","
+			if i ~= #args then
+				expression = expression .. ","
+			end
 		end
 	end
 
 	expression = expression .. ")"
 
-	return _M.sql(expression)
+	return _M.sql(expression, nil)
 end
 
 _M.signup = function(params)
@@ -77,17 +77,23 @@ _M.signup = function(params)
 	}
 
 	if params.type == "oauth" then
+		body["SC"] = "oauth"
 		body["email"] = params.email
 		body["name"] = params.name
 		body["provider"] = params.provider
-		body["sub"] = params.sub
+		body["sub"] = tostring(params.sub)
 	end
+
+	ngx.log(ngx.INFO, cjson.encode(body))
 
 	local res, err = httpc:request_uri(SURREALDB_ENDPOINT, {
 		method = "POST",
 		path = "/signup",
 		body = cjson.encode(body),
-		headers = getHeaders(),
+		headers = {
+			["Content-Type"] = "application/json",
+			["Accept"] = "application/json",
+		},
 	})
 
 	if err then

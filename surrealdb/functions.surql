@@ -22,7 +22,7 @@ DEFINE FUNCTION fn::getToken() {
 
 DEFINE FUNCTION fn::getOAuthUrl($provider: string) {
 
-  IF ($provider == "github") {
+  RETURN IF $provider = "github" {
     LET $params = array::join([
       array::join(['client_id', $GITHUB_CLIENT_ID], '='),
       array::join(['redirect_uri', $GITHUB_CALLBACK_URL], '='),
