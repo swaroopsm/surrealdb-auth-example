@@ -47,7 +47,7 @@ DEFINE SCOPE IF NOT EXISTS  oauth SESSION 7d
 	SIGNIN ( 
 		SELECT * FROM user WHERE email=$email AND  ->authenticated[WHERE out.provider=$provider AND out.sub=$sub]
 	)
-	SIGNUP (
+	SIGNUP { 
 		BEGIN;
 			LET $account = CREATE account CONTENT {
 				provider: $provider,
@@ -63,6 +63,6 @@ DEFINE SCOPE IF NOT EXISTS  oauth SESSION 7d
 
 			RETURN $user;
 		COMMIT;
-	);
+	 };
 
 DEFINE TOKEN github ON SCOPE user TYPE HS256 VALUE "my_gh_token";
