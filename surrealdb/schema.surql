@@ -31,7 +31,7 @@ DEFINE TABLE authenticated SCHEMAFULL PERMISSIONS
   FOR SELECT WHERE in.id = $auth.id;
 
 -- Local auth scope
-DEFINE SCOPE IF NOT EXISTS user SESSION 7d
+DEFINE SCOPE credentials SESSION 7d
 	SIGNIN (
 		SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(password, $password)
 	)
@@ -45,26 +45,23 @@ DEFINE SCOPE IF NOT EXISTS user SESSION 7d
 
 
 -- OAuth scope
-DEFINE SCOPE IF NOT EXISTS  oauth SESSION 7d
-	SIGNIN ( 
-		SELECT * FROM user WHERE email=$email AND  ->authenticated[WHERE out.provider=$provider AND out.sub=$sub]
-	)
-	SIGNUP { 
+DEFINE SCOPE IF NOT EXISTS oauth SESSION 7d
+	SIGNUP {
 		BEGIN;
-			LET $account = CREATE account CONTENT {
-				provider: $provider,
-				sub: $sub
-			};
+			$user = (SELECT * FROM only user where email = $email LIMIT 1) ||
+							(INSERT INTO account (provider, sub) VALUES ($provider, $sub));
 
-			LET $user = CREATE user CONTENT {
-				name: $name,
-				email: $email
-			};
+			$account = (SELECT * FROM only account  where provider = $provider and sub = $sub LIMIT 1) ||
+								 (INSERT INTO user (name, email) VALUES ($name, $email));
 
-			RELATE $user->authenticated->$account;
+			$accountConnection = SELECT id FROM account
+														WHERE <-authenticated[WHERE in.id = $user.id
+															AND out.provider=$provider and out.sub = $sub];
+
+			IF $accountConnection IS NONE {
+				RELATE $user->authenticated->$account;
+			};
 
 			RETURN $user;
 		COMMIT;
 	 };
-
-DEFINE TOKEN github ON SCOPE user TYPE HS256 VALUE "my_gh_token";
