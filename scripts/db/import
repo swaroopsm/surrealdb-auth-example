@@ -1,7 +1,21 @@
 #!/bin/sh
 
+SURREALDB_ENDPOINT="http://localhost:8000"
+SURREALDB_USER="root"
+SURREALDB_PASS="root"
+SURREALDB_NS="surrealdb_auth_example"
+SURREALDB_DB="default"
+
+echo "Importing Schema"
+surreal import --conn $SURREALDB_ENDPOINT --user $SURREALDB_USER --pass $SURREALDB_PASS --ns $SURREALDB_NS --db $SURREALDB_DB ./surrealdb/schema.surql
+
 echo "\nImporting Config"
-surreal import --conn http://localhost:8000 --user root --pass root --ns surrealdb_auth_example --db default ./surrealdb/config.surql
+surreal import --conn $SURREALDB_ENDPOINT --user $SURREALDB_USER --pass $SURREALDB_PASS --ns $SURREALDB_NS --db $SURREALDB_DB ./surrealdb/config.surql
+
+echo "\nImport Auth Scopes"
+surreal import --conn $SURREALDB_ENDPOINT --user $SURREALDB_USER --pass $SURREALDB_PASS --ns $SURREALDB_NS --db $SURREALDB_DB ./surrealdb/auth.surql
 
 echo "\nImport Functions"
-surreal import --conn http://localhost:8000 --user root --pass root --ns surrealdb_auth_example --db default ./surrealdb/functions.surql
+for filename in ./surrealdb/functions/*.surql; do
+surreal import --conn $SURREALDB_ENDPOINT --user $SURREALDB_USER --pass $SURREALDB_PASS --ns $SURREALDB_NS --db $SURREALDB_DB $filename
+done

@@ -8,12 +8,20 @@ local SURREALDB_NS = os.getenv("SURREALDB_NS")
 local SURREALDB_DB = os.getenv("SURREALDB_DB")
 
 local getHeaders = function()
-	return {
+	local headers = {
 		["Content-Type"] = "application/json",
 		["Accept"] = "application/json",
 		["NS"] = SURREALDB_NS,
 		["DB"] = SURREALDB_DB,
 	}
+
+	local token = ngx.req.get_headers()["Authorization"]
+
+	if token then
+		headers["Authorization"] = token
+	end
+
+	return headers
 end
 
 _M.getVersion = function()
@@ -43,7 +51,14 @@ _M.sql = function(statement, token)
 		headers = headers,
 	})
 
-	return cjson.decode(res.body)
+	if err then
+		ngx.log(ngx.ERROR, err)
+	end
+
+	return res
+	-- return cjson.decode({
+	--   data = res
+	-- })
 end
 
 _M.fn = function(fn, ...)
@@ -67,7 +82,7 @@ _M.fn = function(fn, ...)
 
 	expression = expression .. ")"
 
-	return _M.sql(expression, nil)
+	return _M.sql(expression)
 end
 
 _M.signup = function(params)
@@ -82,6 +97,7 @@ _M.signup = function(params)
 		body["name"] = params.name
 		body["provider"] = params.provider
 		body["sub"] = tostring(params.sub)
+		body["meta"] = params.meta
 	end
 
 	ngx.log(ngx.INFO, cjson.encode(body))

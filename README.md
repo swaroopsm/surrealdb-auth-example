@@ -7,7 +7,7 @@ An example demonstrating authentication using surrealdb as the db and openresty 
 - Make sure you have `docker` installed
 - Rename `surrealdb/config.sample.surql` to `surrealdb/config.surql` and adjust the values appropriately
 - Run `docker compose up --build -d`
-- Run `make init` to import the surrealdb schema and functions
+- Run `make import` to import the surrealdb schema and functions
 
 ## Authenticate as a GitHub user
 

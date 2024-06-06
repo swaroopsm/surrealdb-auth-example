@@ -22,7 +22,8 @@ DEFINE TABLE account SCHEMAFULL
     FOR select WHERE <-authenticated.in CONTAINS $auth.id;
 DEFINE FIELD provider ON account TYPE string;
 DEFINE FIELD sub ON account TYPE string;
-DEFINE INDEX provider_sub_unique ON user FIELDS provider, sub UNIQUE;
+DEFINE INDEX provider_sub_unique ON account FIELDS provider, sub UNIQUE;
+DEFINE FIELD meta ON TABLE account FLEXIBLE TYPE option<object>;
 
 -- Graph Edge user <-> account
 DEFINE FIELD in ON TABLE authenticated TYPE record<user>;
@@ -30,38 +31,9 @@ DEFINE FIELD out ON TABLE authenticated TYPE record<account>;
 DEFINE TABLE authenticated SCHEMAFULL PERMISSIONS
   FOR SELECT WHERE in.id = $auth.id;
 
--- Local auth scope
-DEFINE SCOPE credentials SESSION 7d
-	SIGNIN (
-		SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(password, $password)
-	)
-	SIGNUP (
-		CREATE user CONTENT {
-			name: $name,
-			email: $email,
-			password: crypto::argon2::generate($password)
-		}
-	);
-
-
--- OAuth scope
-DEFINE SCOPE IF NOT EXISTS oauth SESSION 7d
-	SIGNUP {
-		BEGIN;
-			$user = (SELECT * FROM only user where email = $email LIMIT 1) ||
-							(INSERT INTO account (provider, sub) VALUES ($provider, $sub));
-
-			$account = (SELECT * FROM only account  where provider = $provider and sub = $sub LIMIT 1) ||
-								 (INSERT INTO user (name, email) VALUES ($name, $email));
-
-			$accountConnection = SELECT id FROM account
-														WHERE <-authenticated[WHERE in.id = $user.id
-															AND out.provider=$provider and out.sub = $sub];
-
-			IF $accountConnection IS NONE {
-				RELATE $user->authenticated->$account;
-			};
-
-			RETURN $user;
-		COMMIT;
-	 };
+-- Events
+-- Doesn't seems to be triggering this event :'(
+DEFINE EVENT authenticate_deleted ON TABLE authenticated WHEN $event = "DELETE" THEN { 
+	-- DELETE account;
+	DELETE account WHERE id = $before.out.id;
+};
