@@ -100,8 +100,6 @@ _M.signup = function(params)
 		body["meta"] = params.meta
 	end
 
-	ngx.log(ngx.INFO, cjson.encode(body))
-
 	local res, err = httpc:request_uri(SURREALDB_ENDPOINT, {
 		method = "POST",
 		path = "/signup",
@@ -116,7 +114,7 @@ _M.signup = function(params)
 		error("surrealdb http error")
 	end
 
-	return res.body
+	return res
 end
 
 _M.signin = function(params)
