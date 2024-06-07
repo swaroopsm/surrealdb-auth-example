@@ -1,4 +1,11 @@
-import { Link, Form, ClientActionFunctionArgs } from "@remix-run/react";
+import {
+  Link,
+  Form,
+  ClientActionFunctionArgs,
+  useActionData,
+  useNavigation,
+} from "@remix-run/react";
+import { useFetcher } from "react-router-dom";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -11,10 +18,6 @@ import {
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 
-export function clientLoader() {
-  return {};
-}
-
 export async function clientAction({ request }: ClientActionFunctionArgs) {
   const formData = await request.formData();
   const response = await fetch("/api/signup", {
@@ -26,14 +29,19 @@ export async function clientAction({ request }: ClientActionFunctionArgs) {
     }),
   });
   const data = await response.json();
-  debugger;
-  // const email = String(formData.get("email"));
-  // const password = String(formData.get("password"));
-  // const errors = {};
-  return {};
+
+  if (!response.ok) {
+    return { error: data };
+  }
+
+  return { data };
 }
 
 export default function Signup() {
+  const action = useActionData();
+  const navigation = useNavigation();
+  const fetcher = useFetcher();
+  console.log(fetcher);
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
@@ -43,7 +51,7 @@ export default function Signup() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Form method="POST">
+        <Form method="POST" navigate={false}>
           <div className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="name">Name</Label>

@@ -16,9 +16,13 @@ local getHeaders = function()
 	}
 
 	local token = ngx.req.get_headers()["Authorization"]
+	local authCookieName = "cookie_" .. "__auth_token"
+	local authToken = ngx.var[authCookieName]
 
 	if token then
 		headers["Authorization"] = token
+	elseif authToken then
+		headers["Authorization"] = "Bearer " .. authToken
 	end
 
 	return headers
