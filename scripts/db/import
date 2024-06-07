@@ -12,8 +12,8 @@ surreal import --conn $SURREALDB_ENDPOINT --user $SURREALDB_USER --pass $SURREAL
 echo "\nImporting Config"
 surreal import --conn $SURREALDB_ENDPOINT --user $SURREALDB_USER --pass $SURREALDB_PASS --ns $SURREALDB_NS --db $SURREALDB_DB ./surrealdb/config.surql
 
-# echo "\nImport Auth Scopes"
-# surreal import --conn $SURREALDB_ENDPOINT --user $SURREALDB_USER --pass $SURREALDB_PASS --ns $SURREALDB_NS --db $SURREALDB_DB ./surrealdb/auth.surql
+echo "\nImport Auth Scopes"
+surreal import --conn $SURREALDB_ENDPOINT --user $SURREALDB_USER --pass $SURREALDB_PASS --ns $SURREALDB_NS --db $SURREALDB_DB ./surrealdb/auth.surql
 
 echo "\nImport Functions"
 for filename in ./surrealdb/functions/*.surql; do
