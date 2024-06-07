@@ -98,6 +98,11 @@ _M.signup = function(params)
 		body["provider"] = params.provider
 		body["sub"] = tostring(params.sub)
 		body["meta"] = params.meta
+	else
+		body["email"] = params.email
+		body["name"] = params.name
+		body["password"] = params.password
+		body["SC"] = "credentials"
 	end
 
 	local res, err = httpc:request_uri(SURREALDB_ENDPOINT, {

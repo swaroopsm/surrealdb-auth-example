@@ -1,5 +1,4 @@
 import {
-  ClientLoaderFunctionArgs,
   Links,
   Meta,
   Outlet,
@@ -11,7 +10,7 @@ import type { LinksFunction } from "@remix-run/node";
 import { LoaderCircle } from "lucide-react";
 
 import stylesheet from "~/globals.css?url";
-import { defer } from "react-router";
+import { AuthContextProvider } from "./contexts/auth";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -24,15 +23,19 @@ export async function clientLoader() {
       "Content-Type": "application/json",
     },
   });
-  const data = await response.json();
+  const me = await response.json();
 
   if (!response.ok) {
     return {
-      error: data,
+      error: me,
     };
   }
 
-  return data;
+  return {
+    data: {
+      me,
+    },
+  };
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -54,10 +57,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { data, error } = useLoaderData<{ error?: any; data?: any }>();
-  console.log({ data, error });
+  const { data, error } = useLoaderData();
 
-  return <Outlet />;
+  return (
+    <AuthContextProvider {...data}>
+      <Outlet />
+    </AuthContextProvider>
+  );
 }
 
 export function HydrateFallback() {
