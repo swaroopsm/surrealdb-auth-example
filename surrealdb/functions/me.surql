@@ -9,5 +9,21 @@ DEFINE FUNCTION fn::whoami() {
     THROW 'err::UNAUTHORIZED';
   };
 
-  RETURN $whoami;
+  RETURN function ($whoami) {
+    const [whoami] = arguments;
+    const avatar = whoami.connected_accounts.map(account => {
+      if (account.provider === 'github') {return account.meta.avatarUrl}
+    }).filter(Boolean);     
+
+    return {
+      ...whoami,
+      initials: whoami.name.split(' ').filter((_, index) => index <= 1).map(word => word[0]).join(''),
+      connected_accounts: whoami.connected_accounts.map(account => ({
+        ...account,
+        url: account.provider === 'github' ? `https://www.github.com/${account.meta.login}` : '',
+
+      })),
+      avatar: avatar?.[0] || null,
+    };
+  };
 };
