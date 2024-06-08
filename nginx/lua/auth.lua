@@ -1,13 +1,88 @@
 local ck = require("resty.cookie")
 local cjson = require("cjson")
+local surrealdb = require("surrealdb")
 
 local actionName = ngx.var[1]
 
-local login = function() end
+local signin = function()
+	ngx.req.read_body()
+	local body = cjson.decode(ngx.req.get_body_data())
 
-local signup = function() end
+	local response, err = surrealdb.signin({
+		name = body.name,
+		email = body.email,
+		password = body.password,
+	})
 
-local logout = function()
+	if err then
+		error(err)
+	end
+
+	if response.status ~= 200 then
+		ngx.log(ngx.ERR, response.body)
+
+		ngx.status = response.status
+		ngx.say(cjson.encode({
+			code = "err:signin",
+			message = "Signin failed",
+		}))
+		ngx.exit(ngx.HTTP_BAD_REQUEST)
+	end
+
+	local result = cjson.decode(response.body)
+	local cookie = ck:new()
+
+	cookie:set({
+		key = "__auth_token",
+		value = result.token,
+		path = "/",
+		httponly = true,
+	})
+
+	ngx.say(cjson.encode({ success = true }))
+	ngx.exit(ngx.HTTP_OK)
+end
+
+local signup = function()
+	ngx.req.read_body()
+	local body = cjson.decode(ngx.req.get_body_data())
+
+	local response, err = surrealdb.signup({
+		name = body.name,
+		email = body.email,
+		password = body.password,
+	})
+
+	if err then
+		error(err)
+	end
+
+	if response.status ~= 200 then
+		ngx.log(ngx.ERR, response.body)
+
+		ngx.status = response.status
+		ngx.say(cjson.encode({
+			code = "err:signup",
+			message = "Signup failed",
+		}))
+		ngx.exit(ngx.HTTP_BAD_REQUEST)
+	end
+
+	local result = cjson.decode(response.body)
+	local cookie = ck:new()
+
+	cookie:set({
+		key = "__auth_token",
+		value = result.token,
+		path = "/",
+		httponly = true,
+	})
+
+	ngx.say(cjson.encode({ success = true }))
+	ngx.exit(ngx.HTTP_OK)
+end
+
+local signout = function()
 	local cookie = ck:new()
 	local cookieFields, err = cookie:get_all()
 
@@ -25,9 +100,9 @@ local logout = function()
 end
 
 local actions = {
-	login = login,
+	signin = signin,
 	signup = signup,
-	logout = logout,
+	logout = signout,
 }
 
 if actions[actionName] then

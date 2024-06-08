@@ -21,8 +21,6 @@ if ngx.var[1] == "github" then
 	local signupResponse = surrealdb.signup(params)
 	local signupResult = cjson.decode(signupResponse.body)
 
-	ngx.log(ngx.INFO, signupResult.token)
-
 	-- Set cookie and redirect to the FE App
 	ngx.header["Set-Cookie"] = "__auth_token=" .. signupResult.token .. "; Path=/; SameSite=Strict; HttpOnly;"
 	ngx.redirect("http://localhost:5173")

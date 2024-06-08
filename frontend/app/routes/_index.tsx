@@ -1,9 +1,9 @@
 import type { MetaFunction } from "@remix-run/node";
-import { Card, CardHeader, CardDescription } from "~/components/ui/card";
+import { Card, CardHeader, CardContent } from "~/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 import { useAuth } from "~/contexts/auth";
-import { Github } from "lucide-react";
 import { Authenticated } from "~/components/Authenticated";
+import { SiGithub } from "@icons-pack/react-simple-icons";
 
 export const meta: MetaFunction = () => {
   return [
@@ -19,12 +19,14 @@ export default function Settings() {
     <Authenticated>
       <div className="min-h-screen flex items-center justify-center">
         <Card className="mx-auto max-w-md w-full relative">
-          <CardHeader className="flex items-center justify-center flex-col gap-8">
+          <CardContent className="flex items-center justify-center flex-col gap-8">
             <Avatar className="size-20 absolute -top-10">
               <AvatarImage src={me?.avatar || undefined} />
-              <AvatarFallback>{me?.initials}</AvatarFallback>
+              <AvatarFallback className="text-3xl">
+                {me?.initials}
+              </AvatarFallback>
             </Avatar>
-            <CardDescription className="flex flex-col gap-8 pt-10">
+            <div className="flex flex-col gap-8 pt-10">
               <div className="flex flex-col gap-1 items-center">
                 <h1 className="text-2xl">{me?.name}</h1>
                 <a
@@ -43,12 +45,12 @@ export default function Settings() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <Github />
+                    <SiGithub />
                   </a>
                 ))}
               </div>
-            </CardDescription>
-          </CardHeader>
+            </div>
+          </CardContent>
         </Card>
       </div>
     </Authenticated>

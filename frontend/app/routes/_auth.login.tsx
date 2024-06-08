@@ -1,4 +1,12 @@
-import { Link } from "@remix-run/react";
+import {
+  Link,
+  Form,
+  ClientActionFunctionArgs,
+  useActionData,
+  useNavigation,
+  useNavigate,
+} from "@remix-run/react";
+import { act, useEffect } from "react";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -11,7 +19,34 @@ import {
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 
+export async function clientAction({ request }: ClientActionFunctionArgs) {
+  const formData = await request.formData();
+  const response = await fetch("/api/auth/signin", {
+    method: "POST",
+    body: JSON.stringify({
+      email: formData.get("email"),
+      password: formData.get("password"),
+    }),
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    return { error: data };
+  }
+
+  return { data };
+}
+
 export default function Login() {
+  const actionData = useActionData();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (actionData?.data?.success) {
+      return navigate("/");
+    }
+  }, [actionData, navigate]);
+
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
@@ -21,11 +56,12 @@ export default function Login() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4">
+        <Form className="grid gap-4" action="/login" method="post">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              name="email"
               type="email"
               placeholder="m@example.com"
               required
@@ -38,7 +74,7 @@ export default function Login() {
                 Forgot your password?
               </Link>
             </div>
-            <Input id="password" type="password" required />
+            <Input id="password" name="password" type="password" required />
           </div>
           <Button type="submit" className="w-full">
             Login
@@ -46,7 +82,7 @@ export default function Login() {
           <Button variant="outline" className="w-full" asChild>
             <a href="/api/oauth/github">Login with GitHub</a>
           </Button>
-        </div>
+        </Form>
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{" "}
           <Link to="/signup" className="underline">

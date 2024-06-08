@@ -20,12 +20,12 @@ import { Label } from "~/components/ui/label";
 
 export async function clientAction({ request }: ClientActionFunctionArgs) {
   const formData = await request.formData();
-  const response = await fetch("/api/signup", {
+  const response = await fetch("/api/auth/signup", {
     method: "POST",
     body: JSON.stringify({
       name: formData.get("name"),
       email: formData.get("email"),
-      // password: formData.get('password'),
+      password: formData.get("password"),
     }),
   });
   const data = await response.json();
@@ -40,8 +40,7 @@ export async function clientAction({ request }: ClientActionFunctionArgs) {
 export default function Signup() {
   const action = useActionData();
   const navigation = useNavigation();
-  const fetcher = useFetcher();
-  console.log(fetcher);
+
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
@@ -51,7 +50,7 @@ export default function Signup() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Form method="POST" navigate={false}>
+        <Form method="POST" action="/signup">
           <div className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="name">Name</Label>
@@ -80,8 +79,12 @@ export default function Signup() {
               </div>
               <Input id="password" name="password" type="password" required />
             </div>
-            <Button type="submit" className="w-full">
-              Login
+            <Button
+              type="submit"
+              className="w-full"
+              loading={navigation.state === "submitting"}
+            >
+              Signup
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">

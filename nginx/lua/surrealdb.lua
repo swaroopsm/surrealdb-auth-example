@@ -130,10 +130,26 @@ _M.signin = function(params)
 	local body = {
 		["NS"] = SURREALDB_NS,
 		["DB"] = SURREALDB_DB,
+		["SC"] = "credentials",
+		["email"] = params.email,
+		["password"] = params.password,
 	}
 
-	-- TODO
-	-- Add functionalilty for credentials auth signin here
+	local res, err = httpc:request_uri(SURREALDB_ENDPOINT, {
+		method = "POST",
+		path = "/signin",
+		body = cjson.encode(body),
+		headers = {
+			["Content-Type"] = "application/json",
+			["Accept"] = "application/json",
+		},
+	})
+
+	if err then
+		error("surrealdb http error")
+	end
+
+	return res
 end
 
 return _M
