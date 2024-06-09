@@ -12,7 +12,7 @@ DEFINE FUNCTION fn::whoami() {
   RETURN function ($whoami) {
     const [whoami] = arguments;
     const avatar = whoami.connected_accounts.map(account => {
-      if (account.provider === 'github') {return account.meta.avatarUrl}
+       {return account.meta.avatarUrl}
     }).filter(Boolean);     
 
     return {

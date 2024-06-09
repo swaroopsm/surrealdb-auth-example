@@ -2,8 +2,8 @@ local cjson = require("cjson")
 local surrealdb = require("surrealdb")
 local args = ngx.req.get_uri_args()
 
-if ngx.var[1] == "github" then
-	local response = surrealdb.fn("github__oauthAuthorize", args.code)
+if ngx.var[1] == "github" or ngx.var[1] == "google" then
+	local response = surrealdb.fn(ngx.var[1] .. "__oauthAuthorize", args.code)
 	local data = cjson.decode(response.body)
 
 	ngx.log(ngx.INFO, response.body)
@@ -21,7 +21,7 @@ if ngx.var[1] == "github" then
 	local signupResponse = surrealdb.signup(params)
 	local signupResult = cjson.decode(signupResponse.body)
 
-	-- Set cookie and redirect to the FE App
+	-- -- Set cookie and redirect to the FE App
 	ngx.header["Set-Cookie"] = "__auth_token=" .. signupResult.token .. "; Path=/; SameSite=Strict; HttpOnly;"
 	ngx.redirect("http://localhost:5173")
 else

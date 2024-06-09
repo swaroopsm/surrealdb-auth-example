@@ -6,6 +6,7 @@ import {
   useNavigation,
 } from "@remix-run/react";
 import { useEffect } from "react";
+import { SiGithub, SiGoogle } from "@icons-pack/react-simple-icons";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -83,7 +84,15 @@ export default function Login() {
             Login
           </Button>
           <Button variant="outline" className="w-full" asChild>
-            <a href="/api/oauth/github">Login with GitHub</a>
+            <a href="/api/oauth/github" className="flex gap-2">
+              <SiGithub className="size-4" /> Login with GitHub
+            </a>
+          </Button>
+
+          <Button variant="outline" className="w-full" asChild>
+            <a href="/api/oauth/google" className="flex gap-2">
+              <SiGoogle className="size-4" /> Login with Google
+            </a>
           </Button>
         </Form>
         <div className="mt-4 text-center text-sm">
