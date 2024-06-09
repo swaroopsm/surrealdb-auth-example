@@ -1,2 +1,11 @@
 surrealdb/db
 surrealdb/config.surql
+
+# Frontend
+node_modules
+
+/.cache
+/build
+/public/build
+.env
+
