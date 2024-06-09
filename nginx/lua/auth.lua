@@ -86,15 +86,11 @@ local signout = function()
 	local cookie = ck:new()
 	local cookieFields, err = cookie:get_all()
 
-	for key, value in pairs(cookieFields) do
-		if key == "__auth_token" then
-			cookie:set({
-				key = "__auth_token",
-				value = "",
-				path = "/",
-			})
-		end
-	end
+	cookie:set({
+		key = "__auth_token",
+		value = "",
+		path = "/",
+	})
 
 	ngx.exit(ngx.HTTP_OK)
 end

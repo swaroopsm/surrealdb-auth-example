@@ -14,6 +14,7 @@ DEFINE FUNCTION fn::whoami() {
     const avatar = whoami.connected_accounts.map(account => {
        {return account.meta.avatarUrl}
     }).filter(Boolean);     
+    const [username, domain] = whoami.email.split('@');
 
     return {
       ...whoami,
@@ -24,6 +25,7 @@ DEFINE FUNCTION fn::whoami() {
 
       })),
       avatar: avatar?.[0] || null,
+      maskedEmail: [username.slice(0, 3), "**********", domain].join('@'),
     };
   };
 };

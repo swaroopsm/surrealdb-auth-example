@@ -64,10 +64,10 @@ export default function Index() {
               <div className="flex flex-col gap-1 items-center">
                 <h1 className="text-2xl">{me?.name}</h1>
                 <a
-                  className="text-lg text-surrealdb-pink underline"
+                  className="text-lg text-surrealdb-pink"
                   href={`mailto:${me?.email}`}
                 >
-                  {me?.email}
+                  {me?.maskedEmail}
                 </a>
               </div>
 
