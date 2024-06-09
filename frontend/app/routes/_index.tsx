@@ -1,9 +1,16 @@
 import type { MetaFunction } from "@remix-run/node";
-import { Card, CardHeader, CardContent } from "~/components/ui/card";
+import { Card, CardFooter, CardContent } from "~/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
-import { useAuth } from "~/contexts/auth";
 import { Authenticated } from "~/components/Authenticated";
+import { Button } from "~/components/ui/button";
 import { SiGithub } from "@icons-pack/react-simple-icons";
+import {
+  ClientActionFunctionArgs,
+  useFetcher,
+  useOutletContext,
+} from "@remix-run/react";
+import { useEffect } from "react";
+import { OutletContext } from "~/types";
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,8 +19,34 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function Settings() {
-  const { me } = useAuth();
+export async function clientAction({ request }: ClientActionFunctionArgs) {
+  const { action, ...rest } = await request.json();
+
+  const actions = {
+    logout: async () => {
+      try {
+        await fetch("/api/auth/signout", { method: "DELETE" });
+      } catch {
+        /* empty */
+      }
+    },
+  };
+
+  const data = await actions?.[action]?.(rest);
+
+  return { success: true, action };
+}
+
+export default function Index() {
+  const ctx = useOutletContext<OutletContext>();
+  const { submit, data, state } = useFetcher({ key: "auth.logout" });
+  const me = ctx?.me;
+
+  useEffect(() => {
+    if (data?.action === "logout" && data?.success) {
+      window.location.href = "/";
+    }
+  }, [data]);
 
   return (
     <Authenticated>
@@ -51,6 +84,26 @@ export default function Settings() {
               </div>
             </div>
           </CardContent>
+          <CardFooter>
+            <Button
+              className="w-full"
+              loading={state === "loading"}
+              onClick={() => {
+                submit(
+                  { action: "logout" },
+                  {
+                    method: "post",
+                    action: "/?index",
+                    encType: "application/json",
+                    navigate: false,
+                    fetcherKey: "auth.logout",
+                  }
+                );
+              }}
+            >
+              Logout
+            </Button>
+          </CardFooter>
         </Card>
       </div>
     </Authenticated>

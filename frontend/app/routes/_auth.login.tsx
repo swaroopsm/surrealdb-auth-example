@@ -4,9 +4,8 @@ import {
   ClientActionFunctionArgs,
   useActionData,
   useNavigation,
-  useNavigate,
 } from "@remix-run/react";
-import { act, useEffect } from "react";
+import { useEffect } from "react";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -39,13 +38,13 @@ export async function clientAction({ request }: ClientActionFunctionArgs) {
 
 export default function Login() {
   const actionData = useActionData();
-  const navigate = useNavigate();
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (actionData?.data?.success) {
-      return navigate("/");
+      window.location.href = "/";
     }
-  }, [actionData, navigate]);
+  }, [actionData]);
 
   return (
     <Card className="mx-auto max-w-sm">
@@ -76,7 +75,11 @@ export default function Login() {
             </div>
             <Input id="password" name="password" type="password" required />
           </div>
-          <Button type="submit" className="w-full">
+          <Button
+            type="submit"
+            className="w-full"
+            loading={navigation.state === "submitting"}
+          >
             Login
           </Button>
           <Button variant="outline" className="w-full" asChild>

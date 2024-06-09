@@ -38,7 +38,6 @@ export async function clientAction({ request }: ClientActionFunctionArgs) {
 }
 
 export default function Signup() {
-  const action = useActionData();
   const navigation = useNavigation();
 
   return (

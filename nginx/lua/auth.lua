@@ -102,7 +102,7 @@ end
 local actions = {
 	signin = signin,
 	signup = signup,
-	logout = signout,
+	signout = signout,
 }
 
 if actions[actionName] then

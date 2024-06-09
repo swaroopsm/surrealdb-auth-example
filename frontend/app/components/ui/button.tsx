@@ -6,7 +6,7 @@ import { LoaderCircle } from "lucide-react";
 import { cn } from "~/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-90 active:translate-y-0.5 transform transition-transform duration-150",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-90 active:translate-y-0.5 transform transition-transform duration-75",
   {
     variants: {
       variant: {
@@ -58,7 +58,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const Comp = asChild ? Slot : "button";
     const className = cn(loading && "disabled:text-transparent", _className);
-    console.log(children);
 
     return (
       <Comp

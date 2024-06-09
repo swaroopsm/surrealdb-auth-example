@@ -4,13 +4,13 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  ShouldRevalidateFunction,
   useLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 import { LoaderCircle } from "lucide-react";
 
 import stylesheet from "~/globals.css?url";
-import { AuthContextProvider } from "./contexts/auth";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -38,6 +38,10 @@ export async function clientLoader() {
   };
 }
 
+export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
+  return false;
+};
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark">
@@ -59,11 +63,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   const { data, error } = useLoaderData();
 
-  return (
-    <AuthContextProvider {...data}>
-      <Outlet />
-    </AuthContextProvider>
-  );
+  return <Outlet context={data} />;
 }
 
 export function HydrateFallback() {
