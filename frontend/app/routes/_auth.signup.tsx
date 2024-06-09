@@ -57,7 +57,7 @@ export default function Signup() {
                 id="name"
                 name="name"
                 type="text"
-                placeholder="Max Musterman"
+                placeholder="Max Mustermann"
                 required
               />
             </div>
@@ -68,7 +68,7 @@ export default function Signup() {
                 id="email"
                 name="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="max@example.org"
                 required
               />
             </div>
