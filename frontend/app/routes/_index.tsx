@@ -1,9 +1,10 @@
+import React from "react";
 import type { MetaFunction } from "@remix-run/node";
 import { Card, CardFooter, CardContent } from "~/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 import { Authenticated } from "~/components/Authenticated";
 import { Button } from "~/components/ui/button";
-import { SiGithub } from "@icons-pack/react-simple-icons";
+import { SiGithub, SiGoogle } from "@icons-pack/react-simple-icons";
 import {
   ClientActionFunctionArgs,
   useFetcher,
@@ -70,16 +71,23 @@ export default function Index() {
                 </a>
               </div>
 
-              <div className="flex items-center justify-center">
+              <div className="flex items-center gap-2 justify-center">
                 {me?.connected_accounts?.map?.((account) => (
-                  <a
-                    href={account.url}
-                    key={account.provider}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <SiGithub />
-                  </a>
+                  <React.Fragment key={account.provider}>
+                    {account.provider === "github" && (
+                      <a
+                        href={account.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <SiGithub className="size-4" />
+                      </a>
+                    )}
+
+                    {account.provider === "google" && (
+                      <SiGoogle className="size-4" />
+                    )}
+                  </React.Fragment>
                 ))}
               </div>
             </div>

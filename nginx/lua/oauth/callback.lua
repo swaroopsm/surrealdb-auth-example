@@ -6,9 +6,15 @@ if ngx.var[1] == "github" or ngx.var[1] == "google" then
 	local response = surrealdb.fn(ngx.var[1] .. "__oauthAuthorize", args.code)
 	local data = cjson.decode(response.body)
 
-	ngx.log(ngx.INFO, response.body)
-
 	local result = data[1].result
+
+	if data[1].status == "ERR" then
+		ngx.log(ngx.ERR, response.body)
+		ngx.status = response.status
+
+		ngx.exit(ngx.HTTP_BAD_REQUEST)
+	end
+
 	local params = {
 		name = result.name,
 		email = result.email,
