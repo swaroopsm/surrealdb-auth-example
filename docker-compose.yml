@@ -21,6 +21,7 @@ services:
       - SURREALDB_DATABASE_PASSWORD=admin
       - SURREALDB_NS=surrealdb_auth_example
       - SURREALDB_DB=default
+      - FRONTEND_URL=http://localhost:5173
 
   surrealdb:
     entrypoint:
