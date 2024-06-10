@@ -74,7 +74,13 @@ export default function Login() {
                 Forgot your password?
               </Link> */}
             </div>
-            <Input id="password" name="password" type="password" required />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              required
+              placeholder="********"
+            />
           </div>
           <Button
             type="submit"

@@ -2,6 +2,8 @@
 
 An example demonstrating authentication using surrealdb as the db and openresty / lua as a router
 
+![A screenshot showing various screens of the app](./screenshot.png "surrealdb auth screenshot")
+
 ## Getting started
 
 ### Backend

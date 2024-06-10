@@ -43,9 +43,9 @@ export default function Signup() {
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Signup</CardTitle>
+        <CardTitle className="text-2xl">Sign up</CardTitle>
         <CardDescription>
-          Enter your email below to login to your account
+          Enter the details below to sign up for an account
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -76,7 +76,13 @@ export default function Signup() {
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
               </div>
-              <Input id="password" name="password" type="password" required />
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="********"
+                required
+              />
             </div>
             <Button
               type="submit"
