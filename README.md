@@ -1,8 +1,14 @@
 # surrealdb-auth-example
 
-An example demonstrating authentication using surrealdb as the db and openresty / lua as a router
+An example app demonstrating authentication using surrealdb.
 
 ![A screenshot showing various screens of the app](./screenshot.png "surrealdb auth screenshot")
+
+##### Tech stack:
+
+- [SurrealDB](https://surrealdb.com/)
+- [Openresty](https://openresty.org/) / [lua-nginx-module](https://github.com/openresty/lua-nginx-module)
+- [Remix](https://remix.run/)
 
 ## Getting started
 
