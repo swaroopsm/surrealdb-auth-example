@@ -2,8 +2,8 @@ USE NS surrealdb_auth_example DB default;
 
 -- Table: user
 DEFINE TABLE user SCHEMAFULL
-	PERMISSIONS
-		FOR select, update, delete WHERE id = $auth.id
+  PERMISSIONS
+    FOR select, update, delete WHERE id = $auth.id
     FOR create NONE;
 
 DEFINE FIELD name ON user TYPE string;
@@ -17,8 +17,8 @@ DEFINE INDEX email ON user FIELDS email UNIQUE;
 
 -- Table: account
 DEFINE TABLE account SCHEMAFULL
-	PERMISSIONS
-		FOR create, update, delete NONE 
+  PERMISSIONS
+    FOR create, update, delete NONE 
     FOR select WHERE <-authenticated.in CONTAINS $auth.id;
 DEFINE FIELD provider ON account TYPE string;
 DEFINE FIELD sub ON account TYPE string;
@@ -34,6 +34,6 @@ DEFINE TABLE authenticated SCHEMAFULL PERMISSIONS
 -- Events
 -- Doesn't seems to be triggering this event :'(
 DEFINE EVENT authenticate_deleted ON TABLE authenticated WHEN $event = "DELETE" THEN { 
-	-- DELETE account;
-	DELETE account WHERE id = $before.out.id;
+  -- DELETE account;
+  DELETE account WHERE id = $before.out.id;
 };
