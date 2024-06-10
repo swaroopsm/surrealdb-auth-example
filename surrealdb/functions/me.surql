@@ -25,7 +25,7 @@ DEFINE FUNCTION fn::whoami() {
 
       })) || [],
       avatar: avatar?.[0] || null,
-      maskedEmail: [username.slice(0, 3), "**********", domain].join('@'),
+      maskedEmail: [username.slice(0, 3), "**********", domain].join(''),
     };
   };
 };
