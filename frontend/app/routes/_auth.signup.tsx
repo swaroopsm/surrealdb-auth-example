@@ -2,11 +2,12 @@ import {
   Link,
   Form,
   ClientActionFunctionArgs,
-  useActionData,
   useNavigation,
+  useActionData,
 } from "@remix-run/react";
-import { useFetcher } from "react-router-dom";
+import { useEffect } from "react";
 
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -39,16 +40,36 @@ export async function clientAction({ request }: ClientActionFunctionArgs) {
 
 export default function Signup() {
   const navigation = useNavigation();
+  const action = useActionData<{ data?: any; error?: any }>();
+
+  useEffect(() => {
+    if (action?.data) {
+      window.location.href = "/";
+    }
+  }, [action]);
 
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Sign up</CardTitle>
-        <CardDescription>
-          Enter the details below to sign up for an account
-        </CardDescription>
+        <div className="flex flex-col gap-4">
+          <div>
+            <CardTitle className="text-2xl">Sign up</CardTitle>
+            <CardDescription>
+              Enter the details below to sign up for an account
+            </CardDescription>
+          </div>
+
+          {action?.error && (
+            <Alert variant="destructive">
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>
+                Sign up failed. Please try to sign up with a different email.
+              </AlertDescription>
+            </Alert>
+          )}
+        </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col gap-8">
         <Form method="POST" action="/signup">
           <div className="grid gap-4">
             <div className="grid gap-2">

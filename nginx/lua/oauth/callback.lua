@@ -1,5 +1,7 @@
 local cjson = require("cjson")
 local surrealdb = require("surrealdb")
+local ck = require("resty.cookie")
+
 local args = ngx.req.get_uri_args()
 
 if ngx.var[1] == "github" or ngx.var[1] == "google" then
@@ -28,8 +30,14 @@ if ngx.var[1] == "github" or ngx.var[1] == "google" then
 	local signupResult = cjson.decode(signupResponse.body)
 
 	-- -- Set cookie and redirect to the FE App
-	ngx.header["Set-Cookie"] = "__auth_token=" .. signupResult.token .. "; Path=/; SameSite=Strict; HttpOnly;"
-	ngx.redirect("http://localhost:5173")
+	local cookie = ck:new()
+	cookie:set({
+		key = "__auth_token",
+		value = signupResult.token,
+		path = "/",
+		httponly = true,
+	})
+	ngx.redirect(os.getenv("FRONTEND_URL") .. "", 302)
 else
 	ngx.exit(ngx.HTTP_BAD_REQUEST)
 end
