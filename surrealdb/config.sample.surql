@@ -1,9 +1,9 @@
 -- GitHub OAuth
 DEFINE PARAM $GITHUB_CLIENT_ID VALUE "";
 DEFINE PARAM $GITHUB_CLIENT_SECRET VALUE "";
-DEFINE PARAM $GITHUB_CALLBACK_URL VALUE 'http://localhost:5173/api/oauth/github/callback'
+DEFINE PARAM $GITHUB_CALLBACK_URL VALUE 'http://localhost:5173/api/oauth/github/callback';
 
 -- Google OAuth
 DEFINE PARAM $GOOGLE_CLIENT_ID VALUE "";
 DEFINE PARAM $GOOGLE_CLIENT_SECRET VALUE "";
-DEFINE PARAM $GOOGLE_CALLBACK_URL VALUE 'http://localhost:5173/api/oauth/google/callback'
+DEFINE PARAM $GOOGLE_CALLBACK_URL VALUE 'http://localhost:5173/api/oauth/google/callback';

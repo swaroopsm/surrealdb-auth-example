@@ -9,6 +9,7 @@ import {
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 import { LoaderCircle } from "lucide-react";
+import { Me } from "./types";
 
 import stylesheet from "~/globals.css?url";
 
@@ -38,7 +39,7 @@ export async function clientLoader() {
   };
 }
 
-export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
+export const shouldRevalidate: ShouldRevalidateFunction = () => {
   return false;
 };
 
@@ -61,7 +62,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { data, error } = useLoaderData();
+  const { data } = useLoaderData<{
+    data?: { me: Me };
+    error?: any;
+  }>();
 
   return <Outlet context={data} />;
 }

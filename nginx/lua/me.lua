@@ -7,6 +7,7 @@ if response.status == ngx.HTTP_OK then
 	local data = cjson.decode(response.body)
 
 	if data[1].status == "ERR" then
+		ngx.log(ngx.ERR, response.body)
 		return ngx.exit(ngx.HTTP_UNAUTHORIZED)
 	end
 
