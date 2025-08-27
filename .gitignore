@@ -1,6 +1,9 @@
 surrealdb/db
 surrealdb/config.surql
 
+# Go binary
+surrealdb-auth-example
+
 # Frontend
 node_modules
 

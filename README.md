@@ -7,7 +7,7 @@ An example app demonstrating authentication using surrealdb.
 ##### Tech stack:
 
 - [SurrealDB](https://surrealdb.com/)
-- [Openresty](https://openresty.org/) / [lua-nginx-module](https://github.com/openresty/lua-nginx-module)
+- [Go](https://golang.org/) with [Gin](https://gin-gonic.com/) HTTP framework
 - [Remix](https://remix.run/)
 
 ## Getting started
@@ -25,6 +25,24 @@ An example app demonstrating authentication using surrealdb.
 - `npm i`
 - `npm run dev`
 - Visit: `http://localhost:5173`
+
+## Development
+
+### Running the Go backend locally
+
+```bash
+# Build the Go application
+go build .
+
+# Set environment variables
+export SURREALDB_ENDPOINT=http://localhost:8000
+export SURREALDB_NS=surrealdb_auth_example
+export SURREALDB_DB=default
+export FRONTEND_URL=http://localhost:5173
+
+# Run the application
+./surrealdb-auth-example
+```
 
 ## SurrealDB Functions:
 
